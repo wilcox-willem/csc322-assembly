@@ -1,0 +1,61 @@
+     1                                  ; WILLEM WILCOX
+     2                                  ; Program 1: Data Storage
+     3                                  ; 9/16/23
+     4                                  ; What do I listen to when I debug? Rage Against the Compiler
+     5                                  
+     6                                  SECTION .data
+     7                                  ; define data/variables here.  Think DB, DW, DD, DQ
+     8                                  ;Source is from HWK 5
+     9                                  
+    10 00000000 0B                      a: DB 11
+    11 00000001 0300                    b: DW 11b
+    12 00000003 11000000                c: DD 11h
+    13 00000007 0900000000000000        d: DQ 11q
+    14 0000000F FBFF                    e: DW -5
+    15 00000011 435343333232            f: DW 'CSC322'
+    16 00000017 486F776479              g: DB 'Howdy'
+    17 0000001C 486F77647900            h: DW 'Howdy'
+    18 00000022 010203                  i: DB 1,2,3
+    19 00000025 0A0000000B0000000C-     j: dd 10,11,12,13,14
+    20 0000002E 0000000D0000000E00-
+    21 00000037 0000               
+    22                                  
+    23 00000039 0B000D000F001100        a1: DW 11,13,15,17
+    24 00000041 0B0D0F12                b1: DB 11,13,15,18
+    25 00000045 64000000C80000002C-     c1: DD 100,200,300
+    26 0000004E 010000             
+    27 00000051 4523010000000000        d1: DQ 12345h
+    28                                  
+    29 00000059 CE                      a2: DB -50
+    30 0000005A D3FF                    b2: DW -45
+    31 0000005C E2                      c2: DB -30
+    32 0000005D E7FF                    d2: DW -25
+    33 0000005F ECFFFFFF                e2: DD -20
+    34                                  
+    35 00000063 4265617273              a3: DB 'Bears'
+    36 00000068 64000000                b3: DD 100
+    37 0000006C 0000                    c3: DW 0
+    38 0000006E 476F20                  d3: DB 'Go '
+    39 00000071 4D657263657221          e3: DB 'Mercer!'
+    40                                  
+    41 00000078 6400                    a4: DW 100
+    42 0000007A 0001                    b4: DW 100h
+    43 0000007C 0400                    c4: DW 100b
+    44 0000007E 4000                    d4: DW 100q
+    45 00000080 6400                    e4: DW 100d
+    46                                  
+    47                                  SECTION .bss
+    48                                  ; define uninitialized data here
+    49                                  
+    50                                  SECTION .text
+    51                                  global _main
+    52                                  _main:
+    53                                  
+    54                                  ; put your code here.
+    55                                  
+    56                                  
+    57                                  
+    58                                  ; Normal termination code
+    59 00000000 B801000000              mov eax, 1
+    60 00000005 BB00000000              mov ebx, 0
+    61 0000000A CD80                    int 80h
