@@ -1,0 +1,106 @@
+     1                                  ; Wilcox, Willem
+     2                                  ; Program 3 - Summing Arrays
+     3                                  ; 10/01/23
+     4                                  ; Due Wed, Oct 4th, 2023
+     5                                  
+     6                                  SECTION .data
+     7                                  ; define data/variables here.  Think DB, DW, DD, DQ
+     8 00000000 01FE03FC05              bArray:		DB	1,-2,3,-4,5
+     9 00000005 6400C8002C019001F4-     wArray: 	DW	100,200,300,400,500
+    10 0000000E 01                 
+    11 0000000F BEFEFFFFDEFCFFFF2E-     dArray:		DD	-322,-322h,-322q,-1833,-1833h
+    12 00000018 FFFFFFD7F8FFFFCDE7-
+    13 00000021 FFFF               
+    14 00000023 00                      bArraySum: 	DB	0
+    15 00000024 0000                    wArraySum:	DW 	0
+    16 00000026 00000000                dArraySum:	DD	0
+    17 0000002A 00000000                grandTotal:	DD	0
+    18                                  
+    19                                  SECTION .bss
+    20                                  ; define uninitialized data here
+    21                                  
+    22                                  SECTION .text
+    23                                  global _main
+    24                                  _main:
+    25                                  ; put your code here.
+    26                                  
+    27                                  ; Sum bArray
+    28 00000000 A0[00000000]            	mov al,BYTE [bArray]
+    29 00000005 0005[23000000]          	add BYTE [bArraySum],al
+    30                                  
+    31 0000000B A0[01000000]            	mov al,BYTE [bArray+1]
+    32 00000010 0005[23000000]          	add BYTE [bArraySum],al
+    33                                  
+    34 00000016 A0[02000000]            	mov al,BYTE [bArray+2]
+    35 0000001B 0005[23000000]          	add BYTE [bArraySum],al
+    36                                  
+    37 00000021 A0[03000000]            	mov al,BYTE [bArray+3]
+    38 00000026 0005[23000000]          	add BYTE [bArraySum],al
+    39                                  
+    40 0000002C A0[04000000]            	mov al,BYTE [bArray+4]
+    41 00000031 0005[23000000]          	add BYTE [bArraySum],al
+    42                                  	
+    43 00000037 0FBE15[23000000]        	movsx edx,BYTE [bArraySum]
+    44 0000003E 0115[2A000000]          	add DWORD [grandTotal],edx
+    45                                  
+    46                                  	; For debugging, check bl for value of wArraySum
+    47 00000044 8A1D[23000000]          	mov bl,BYTE [bArraySum]
+    48                                  	
+    49                                  ; Sum wArray
+    50 0000004A 66A1[05000000]                  mov ax,WORD [wArray]
+    51 00000050 660105[24000000]                add WORD [wArraySum],ax
+    52                                  
+    53 00000057 66A1[07000000]                  mov ax,WORD [wArray+2]
+    54 0000005D 660105[24000000]                add WORD [wArraySum],ax
+    55                                  
+    56 00000064 66A1[09000000]                  mov ax,WORD [wArray+4]
+    57 0000006A 660105[24000000]                add WORD [wArraySum],ax
+    58                                  
+    59 00000071 66A1[0B000000]                  mov ax,WORD [wArray+6]
+    60 00000077 660105[24000000]                add WORD [wArraySum],ax
+    61                                  
+    62 0000007E 66A1[0D000000]                  mov ax,WORD [wArray+8]
+    63 00000084 660105[24000000]                add WORD [wArraySum],ax
+    64                                  
+    65 0000008B 0FBF15[24000000]                movsx edx,WORD [wArraySum]
+    66 00000092 0115[2A000000]                  add DWORD [grandTotal],edx
+    67                                  
+    68                                          ; For debugging, check bx for value of wArraySum
+    69 00000098 66A1[24000000]                  mov ax,WORD [wArraySum]
+    70                                  
+    71                                  ; Sum dArray
+    72 0000009E 8B0D[0F000000]                  mov ecx,DWORD [dArray]
+    73 000000A4 010D[26000000]                  add DWORD [dArraySum],ecx
+    74                                  
+    75 000000AA 8B0D[13000000]                  mov ecx,DWORD [dArray+4]
+    76 000000B0 010D[26000000]                  add DWORD [dArraySum],ecx
+    77                                  
+    78 000000B6 8B0D[17000000]                  mov ecx,DWORD [dArray+8]
+    79 000000BC 010D[26000000]                  add DWORD [dArraySum],ecx
+    80                                  
+    81 000000C2 8B0D[1B000000]                  mov ecx,DWORD [dArray+12]
+    82 000000C8 010D[26000000]                  add DWORD [dArraySum],ecx
+    83                                  
+    84 000000CE 8B0D[1F000000]                  mov ecx,DWORD [dArray+16]
+    85 000000D4 010D[26000000]                  add DWORD [dArraySum],ecx
+    86                                  
+    87 000000DA 8B15[26000000]                  mov edx,DWORD [dArraySum]
+    88 000000E0 0115[2A000000]                  add DWORD [grandTotal],edx
+    89                                  
+    90                                          ; For debugging, check ecx for value of dArraySum
+    91 000000E6 8B0D[26000000]                  mov ecx,DWORD [dArraySum]
+    92                                  	; For debugging, check edx for value of grandTotal
+    93 000000EC 8B15[2A000000]                  mov edx,DWORD [grandTotal]
+    94                                  
+    95                                  ;Testing code
+    96                                  ;mov al,[bArray]
+    97                                  ;mov bx,[bArray]
+    98                                  ;mov cx,[wArray]
+    99                                  ;mov edx,[dArray]
+   100                                  
+   101                                  ; break point to peek into memory!
+   102                                  lastBreak:
+   103                                  
+   104                                  ; Normal termination code
+   105 000000F2 BB00000000              mov ebx, 0
+   106 000000F7 CD80                    int 80h
