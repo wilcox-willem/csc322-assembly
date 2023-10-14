@@ -1,0 +1,51 @@
+     1                                  ; WILLEM WILCOX
+     2                                  ; Program 5
+     3                                  ; 10/13/23
+     4                                  ; If you're reading this, have a wonderful day! :)
+     5                                  
+     6                                  SECTION .data
+     7                                  ; define data/variables here.  Think DB, DW, DD, DQ
+     8 00000000 00000000                FibsPrev: DD 0
+     9                                  
+    10                                  SECTION .bss
+    11                                  ; define uninitialized data here
+    12 00000000 <res 00000004>          MaxFib: RESD 1
+    13 00000004 <res 00000002>          FibCount: RESW 1
+    14                                  
+    15                                  SECTION .text
+    16                                  global _main
+    17                                  _main:
+    18                                  
+    19                                  ; set data
+    20 00000000 66C705[04000000]00-     mov word [FibCount],0
+    21 00000008 00                 
+    22 00000009 C705[00000000]0100-     mov dword [MaxFib],1
+    23 00000011 0000               
+    24                                  
+    25                                  loop_start:
+    26 00000013 FF05[04000000]                  inc dword [FibCount]
+    27 00000019 8B0D[00000000]                  mov ecx,[FibsPrev]
+    28 0000001F 8B15[00000000]                  mov edx,[MaxFib]
+    29 00000025 01D1                            add ecx,edx ; ECX now contains new MaxFib
+    30 00000027 7214                            jc end_of_loop
+    31                                  
+    32 00000029 8915[00000000]                  mov [FibsPrev],edx ; FibsPrev is now MaxFib
+    33 0000002F 890D[00000000]                  mov [MaxFib],ecx ; MaxFib is now the newest fib seq
+    34                                          
+    35                                          ; Loop control
+    36                                          ; cmp bx,# is an arbitrary means to stop inf loops
+    37 00000035 6643                            inc bx
+    38 00000037 6683FB63                        cmp bx,99 
+    39 0000003B 7ED6                            jle loop_start
+    40                                  
+    41                                  end_of_loop:
+    42                                          ; update MaxFib to largest unsigned dword fib seq
+    43 0000003D 8B15[00000000]                  mov edx,[FibsPrev]
+    44 00000043 8915[00000000]                  mov [MaxFib],edx 
+    45                                  
+    46                                  lastBreak:
+    47                                  ; Normal termination code
+    48 00000049 B801000000              mov eax, 1
+    49 0000004E BB00000000              mov ebx, 0
+    50 00000053 CD80                    int 80h
+    51                                  
