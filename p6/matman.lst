@@ -1,0 +1,97 @@
+     1                                  ; WILLEM WILCOX
+     2                                  ; Program 6
+     3                                  ; 10/25/23
+     4                                  ; If you're reading this, have a wonderful morning/evening/night! :)
+     5                                  
+     6                                  ROWS: EQU 5 ; constant for number of rows.
+     7                                  COLS: EQU 7 ; constant for number of columns.
+     8                                  
+     9                                  SECTION .data
+    10                                  ; define data/variables here.  Think DB, DW, DD, DQ
+    11                                  ; test matrix below
+    12 00000000 010000000200000003-     MyMatrix: dd   1,  2,  3,  4,  5,  6,  7
+    13 00000009 000000040000000500-
+    14 00000012 000006000000070000-
+    15 0000001B 00                 
+    16 0000001C 08000000090000000A-               dd   8,  9, 10, 11, 12, 13, 14
+    17 00000025 0000000B0000000C00-
+    18 0000002E 00000D0000000E0000-
+    19 00000037 00                 
+    20 00000038 0F0000001000000011-               dd  15, 16, 17, 18, 19, 20, 21
+    21 00000041 000000120000001300-
+    22 0000004A 000014000000150000-
+    23 00000053 00                 
+    24 00000054 160000001700000018-               dd  22, 23, 24, 25, 26, 27, 28
+    25 0000005D 000000190000001A00-
+    26 00000066 00001B0000001C0000-
+    27 0000006F 00                 
+    28 00000070 1D0000001E0000001F-               dd  29, 30, 31, 32, 33, 34, 35
+    29 00000079 000000200000002100-
+    30 00000082 000022000000230000-
+    31 0000008B 00                 
+    32                                  
+    33 0000008C 05000000                CurrentRow: dd ROWS
+    34 00000090 07000000                CurrentCol: dd COLS
+    35                                  
+    36                                  SECTION .bss
+    37                                  ; define uninitialized data here
+    38 00000000 <res 00000014>          RowSums: RESD ROWS
+    39 00000014 <res 0000001C>          ColSums: RESD COLS
+    40 00000030 <res 00000004>          Sum: RESD 1
+    41                                  
+    42                                  SECTION .text
+    43                                  global _main
+    44                                  _main:
+    45                                  
+    46                                    ; This loop starts from the furthest item and works it way to the first
+    47                                  
+    48                                    ; start first loop (for columns)
+    49                                    col_loop:
+    50                                          ; first, check if curr col is within bounds
+    51 00000000 FF0D[90000000]                  dec dword[CurrentCol]
+    52 00000006 A1[90000000]                    mov eax,[CurrentCol]
+    53 0000000B 83F8FF                          cmp eax,-1
+    54 0000000E 7E56                            jng exit_loops
+    55                                  
+    56                                  	
+    57 00000010 C705[8C000000]0500-             mov dword[CurrentRow],ROWS ; reset ROWS counter
+    58 00000018 0000               
+    59                                  
+    60                                    ; start second loop (for rows)
+    61                                    row_loop:
+    62                                          ; first, check if curr row is within bounds, if not do a col loop
+    63 0000001A FF0D[8C000000]                  dec dword[CurrentRow]
+    64 00000020 A1[8C000000]                    mov eax,[CurrentRow]
+    65 00000025 83F8FF                          cmp eax,-1
+    66 00000028 7ED6                            jng col_loop
+    67                                  
+    68                                          ; row_loop main
+    69 0000002A A1[8C000000]                    mov eax,[CurrentRow] ; begin prepping index val
+    70 0000002F BB07000000                      mov ebx,COLS
+    71 00000034 F7E3                            mul ebx ; multiply 
+    72 00000036 0305[90000000]                  add eax,[CurrentCol]
+    73 0000003C BA[00000000]                    mov edx,MyMatrix ; add address of MyMatrix to index
+    74                                  
+    75 00000041 8B0C82                          mov ecx,[edx + eax * 4] ; ecx now holds current matrix item
+    76 00000044 010D[30000000]                  add dword[Sum],ecx ; update sum
+    77                                  
+    78 0000004A A1[8C000000]                    mov eax,[CurrentRow]
+    79 0000004F BA[00000000]                    mov edx,RowSums
+    80 00000054 010C82                          add [edx + eax * 4],ecx ; update RowSum
+    81                                  
+    82 00000057 A1[90000000]                    mov eax,[CurrentCol]
+    83 0000005C BA[14000000]                    mov edx,ColSums
+    84 00000061 010C82                          add [edx + eax * 4],ecx ; update ColSum
+    85                                  
+    86 00000064 EBB4                            jmp row_loop
+    87                                  
+    88                                  exit_loops:
+    89                                  
+    90                                  
+    91                                  lastBreak:
+    92                                  ; Normal termination code
+    93 00000066 B801000000              mov eax, 1
+    94 0000006B BB00000000              mov ebx, 0
+    95 00000070 CD80                    int 80h
+    96                                  
+    97                                  
