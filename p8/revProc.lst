@@ -1,0 +1,144 @@
+     1                                  ; WILLEM WILCOX
+     2                                  ; Program 8
+     3                                  ; 11/8/23
+     4                                  ; Hey! Hope you doing well!
+     5                                  ;
+     6                                  ; Fun Story: While I was at my brother's bachelor party, I found out
+     7                                  ;            one of the other groomsmen (Antonio) knew assembly! Also,
+     8                                  ;            His brother has to take it next semester,
+     9                                  ;            so we got to scare him early    :)
+    10                                  
+    11                                  
+    12                                  
+    13                                  
+    14                                  SECTION .data
+    15                                  ;array1
+    16 00000000 010000000200000003-     array1: dd      1,2,3,4,5
+    17 00000009 000000040000000500-
+    18 00000012 0000               
+    19                                  len1:   EQU     ($-array1)
+    20                                  
+    21                                  ;array2
+    22 00000014 F6FFFFFFF7FFFFFFF8-     array2: dd      -10, -9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9
+    23 0000001D FFFFFFF9FFFFFFFAFF-
+    24 00000026 FFFFFBFFFFFFFCFFFF-
+    25 0000002F FFFDFFFFFFFEFFFFFF-
+    26 00000038 FFFFFFFF0000000001-
+    27 00000041 000000020000000300-
+    28 0000004A 000004000000050000-
+    29 00000053 000600000007000000-
+    30 0000005C 0800000009000000   
+    31                                  len2:   EQU     ($-array2)
+    32                                  
+    33                                  ;array3
+    34 00000064 000000000A00000014-     array3: dd  0,10,20,30,40,50,60,70,80,90
+    35 0000006D 0000001E0000002800-
+    36 00000076 0000320000003C0000-
+    37 0000007F 004600000050000000-
+    38 00000088 5A000000           
+    39 0000008C 640000006E00000078-       dd  100,110,120,130,140,150,160,170,180,190
+    40 00000095 000000820000008C00-
+    41 0000009E 000096000000A00000-
+    42 000000A7 00AA000000B4000000-
+    43 000000B0 BE000000           
+    44 000000B4 C8000000D2000000DC-       dd  200,210,220,230,240,250,260,270,280,290
+    45 000000BD 000000E6000000F000-
+    46 000000C6 0000FA000000040100-
+    47 000000CF 000E01000018010000-
+    48 000000D8 22010000           
+    49 000000DC 2C0100003601000040-       dd  300,310,320,330,340,350,360,370,380,390
+    50 000000E5 0100004A0100005401-
+    51 000000EE 00005E010000680100-
+    52 000000F7 00720100007C010000-
+    53 00000100 86010000           
+    54 00000104 900100009A010000A4-       dd  400,410,420,430,440,450,460,470,480,490,500
+    55 0000010D 010000AE010000B801-
+    56 00000116 0000C2010000CC0100-
+    57 0000011F 00D6010000E0010000-
+    58 00000128 EA010000F4010000   
+    59                                  len3:   EQU     ($-array3)
+    60                                  
+    61                                  SECTION .bss
+    62                                  ; empty
+    63                                  
+    64                                  SECTION .text
+    65                                  global _main
+    66                                  _main:
+    67                                  
+    68                                  ; start of main
+    69 00000000 68[00000000]            push array1
+    70 00000005 6A14                    push len1
+    71 00000007 E81D000000              call reverseArrayMain
+    72                                  
+    73 0000000C 68[14000000]            push array2
+    74 00000011 6A50                    push len2
+    75 00000013 E811000000              call reverseArrayMain
+    76                                  
+    77 00000018 68[64000000]            push array3
+    78 0000001D 68CC000000              push len3
+    79 00000022 E802000000              call reverseArrayMain
+    80                                  
+    81 00000027 EB31                    jmp lastBreak
+    82                                  ; end of main
+    83                                  
+    84                                  ; function args (array, length)
+    85                                  reverseArrayMain:
+    86                                  ; start reverseArrayMain
+    87                                      ; preserve base pointer/address
+    88 00000029 55                          push ebp
+    89 0000002A 89E5                        mov ebp, esp
+    90                                  
+    91                                      ; preserve registers
+    92 0000002C 50                          push eax
+    93 0000002D 53                          push ebx
+    94 0000002E 51                          push ecx
+    95 0000002F 52                          push edx
+    96 00000030 56                          push esi
+    97                                      ; end pushing/preserving
+    98                                  
+    99                                      ; ecx now holds length of array, adjusted for size
+   100 00000031 8B4D08                      mov ecx,[ebp+8]
+   101 00000034 C1E903                      shr ecx,3
+   102                                  
+   103                                      ; eax points to start of array
+   104 00000037 8B450C                      mov eax,[ebp+12]
+   105                                      ; ebx points to end of array
+   106 0000003A 8B5D0C                      mov ebx,[ebp+12]
+   107 0000003D 83EB04                      sub ebx,4
+   108 00000040 035D08                      add ebx,[ebp+8]
+   109                                      
+   110                                      ;loop for reverseArrayMain
+   111                                      reverse: 
+   112                                        ; edx is a temp1
+   113                                        ; esi is a temp2
+   114 00000043 8B13                          mov edx,[ebx]
+   115 00000045 8B30                          mov esi,[eax]
+   116 00000047 8933                          mov [ebx],esi
+   117 00000049 8910                          mov [eax],edx
+   118                                  
+   119 0000004B 83C004                        add eax,4
+   120 0000004E 83EB04                        sub ebx,4
+   121 00000051 E2F0                          loop reverse
+   122                                  
+   123                                      ; pop previously preserved registers and pointers/address
+   124 00000053 5E                          pop esi
+   125 00000054 5A                          pop edx
+   126 00000055 59                          pop ecx
+   127 00000056 5B                          pop ebx
+   128 00000057 58                          pop eax
+   129 00000058 5D                          pop ebp
+   130                                      ; end popping
+   131                                  
+   132 00000059 C3                          ret
+   133                                  ;end reverseArrayMain
+   134                                  
+   135                                  
+   136                                  
+   137                                  lastBreak:
+   138                                  ; Normal termination code
+   139 0000005A B801000000              mov eax, 1
+   140 0000005F BB00000000              mov ebx, 0
+   141 00000064 CD80                    int 80h
+   142                                  
+   143                                  
+   144                                  
