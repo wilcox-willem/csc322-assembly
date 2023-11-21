@@ -1,0 +1,360 @@
+     1                                  ; WILLEM WILCOX
+     2                                  ; Program 9
+     3                                  ; 11/13/23
+     4                                  ; One day, the wheel is gonna catch me. I don't know when, 
+     5                                  ; but I'll keep running until it does 
+     6                                  
+     7                                  ; Welcome to macro city baby! Time to get cookin'
+     8                                  
+     9                                  ; Prints to console
+    10                                  %macro prt 2
+    11                                      ; %1 = address of item
+    12                                      ; %2 = length of item
+    13                                      pusha
+    14                                      
+    15                                      mov eax, 4
+    16                                      mov ebx, 1
+    17                                      mov ecx, %1
+    18                                      mov edx, %2
+    19                                      int 80h
+    20                                      
+    21                                      popa
+    22                                  %endmacro
+    23                                  
+    24                                  ; Prints the array
+    25                                  %macro prtArray 2
+    26                                      ; %1 = address of array
+    27                                      ; %2 = length of array
+    28                                      pusha
+    29                                      
+    30                                      mov edi, %2     ; set edi to numslen
+    31                                      xor esi, esi    ; clear esi for use as counter
+    32                                      mov ax, [%1]    ; set ax to nums address in memory
+    33                                      mov ebx, %1	    ; set ebx to nums pointer
+    34                                  
+    35                                      call prtArrayLoop
+    36                                      
+    37                                      popa
+    38                                  %endmacro
+    39                                  
+    40                                  ;;;; END MACROS ;;;;
+    41                                  
+    42                                  
+    43                                  ;;;; START DATA ;;;;
+    44                                  
+    45                                  SECTION .data
+    46                                  ; define data/variables here.  Think DB, DW, DD, DQ
+    47                                  
+    48                                  ;; Main Array
+    49 00000000 D00730750000FFFF00-     nums:    dw 2000, 30000, 0, 65535, 0, 1, 2, 3, 100
+    50 00000009 000100020003006400 
+    51                                  numslen: EQU ($-nums)
+    52                                  
+    53                                  
+    54                                  ; String place holder
+    55 00000012 20202020200A00          string:  db "     ", 10, 0
+    56                                  
+    57                                  ; Clear Screen
+    58 00000019 1B5B324A                cls:     db 1bh, '[2J'
+    59                                  clsLen:  EQU ($-cls)
+    60                                  
+    61                                  ; New Line
+    62 0000001D 0A                      nl:    db 10
+    63                                  nlLen:   EQU ($-nl)
+    64                                  
+    65                                  ;; Titles and Headers
+    66 0000001E 2A2A2A2A57696C6C73-     m1:    db "****Wills Wacky Array Sorter****"
+    67 00000027 205761636B79204172-
+    68 00000030 72617920536F727465-
+    69 00000039 722A2A2A2A         
+    70                                  m1Len: EQU ($-m1)
+    71 0000003E 4F726967696E616C20-     m2:    db "Original Array"
+    72 00000047 4172726179         
+    73                                  m2Len: EQU ($-m2)
+    74 0000004C 536F72746564204172-     m3:    db "Sorted Array"
+    75 00000055 726179             
+    76                                  m3Len: EQU ($-m3)
+    77                                  
+    78                                  SECTION .bss
+    79                                  ; define uninitialized data here
+    80                                  
+    81                                  ;;;; END OF DATA ;;;;
+    82                                  
+    83                                  ;;;; START OF MAIN ;;;;
+    84                                  
+    85                                  SECTION .text
+    86                                  global _main
+    87                                  _main:
+    88                                  
+    89                                  prt cls, clsLen       ; clear the screen
+    90                              <1> 
+    91                              <1> 
+    92 00000000 60                  <1>  pusha
+    93                              <1> 
+    94 00000001 B804000000          <1>  mov eax, 4
+    95 00000006 BB01000000          <1>  mov ebx, 1
+    96 0000000B B9[19000000]        <1>  mov ecx, %1
+    97 00000010 BA04000000          <1>  mov edx, %2
+    98 00000015 CD80                <1>  int 80h
+    99                              <1> 
+   100 00000017 61                  <1>  popa
+   101                                  prt cls, clsLen
+   102                              <1> 
+   103                              <1> 
+   104 00000018 60                  <1>  pusha
+   105                              <1> 
+   106 00000019 B804000000          <1>  mov eax, 4
+   107 0000001E BB01000000          <1>  mov ebx, 1
+   108 00000023 B9[19000000]        <1>  mov ecx, %1
+   109 00000028 BA04000000          <1>  mov edx, %2
+   110 0000002D CD80                <1>  int 80h
+   111                              <1> 
+   112 0000002F 61                  <1>  popa
+   113                                  prt nl, nlLen         ; print new line
+   114                              <1> 
+   115                              <1> 
+   116 00000030 60                  <1>  pusha
+   117                              <1> 
+   118 00000031 B804000000          <1>  mov eax, 4
+   119 00000036 BB01000000          <1>  mov ebx, 1
+   120 0000003B B9[1D000000]        <1>  mov ecx, %1
+   121 00000040 BA01000000          <1>  mov edx, %2
+   122 00000045 CD80                <1>  int 80h
+   123                              <1> 
+   124 00000047 61                  <1>  popa
+   125                                  
+   126                                  prt m1, m1Len     ; print the title of the program
+   127                              <1> 
+   128                              <1> 
+   129 00000048 60                  <1>  pusha
+   130                              <1> 
+   131 00000049 B804000000          <1>  mov eax, 4
+   132 0000004E BB01000000          <1>  mov ebx, 1
+   133 00000053 B9[1E000000]        <1>  mov ecx, %1
+   134 00000058 BA20000000          <1>  mov edx, %2
+   135 0000005D CD80                <1>  int 80h
+   136                              <1> 
+   137 0000005F 61                  <1>  popa
+   138                                  prt nl, nlLen         ; print new line
+   139                              <1> 
+   140                              <1> 
+   141 00000060 60                  <1>  pusha
+   142                              <1> 
+   143 00000061 B804000000          <1>  mov eax, 4
+   144 00000066 BB01000000          <1>  mov ebx, 1
+   145 0000006B B9[1D000000]        <1>  mov ecx, %1
+   146 00000070 BA01000000          <1>  mov edx, %2
+   147 00000075 CD80                <1>  int 80h
+   148                              <1> 
+   149 00000077 61                  <1>  popa
+   150                                  
+   151                                  prt m2, m2Len     ; print the header "Original array"
+   152                              <1> 
+   153                              <1> 
+   154 00000078 60                  <1>  pusha
+   155                              <1> 
+   156 00000079 B804000000          <1>  mov eax, 4
+   157 0000007E BB01000000          <1>  mov ebx, 1
+   158 00000083 B9[3E000000]        <1>  mov ecx, %1
+   159 00000088 BA0E000000          <1>  mov edx, %2
+   160 0000008D CD80                <1>  int 80h
+   161                              <1> 
+   162 0000008F 61                  <1>  popa
+   163                                  prt nl, nlLen         ; print new line
+   164                              <1> 
+   165                              <1> 
+   166 00000090 60                  <1>  pusha
+   167                              <1> 
+   168 00000091 B804000000          <1>  mov eax, 4
+   169 00000096 BB01000000          <1>  mov ebx, 1
+   170 0000009B B9[1D000000]        <1>  mov ecx, %1
+   171 000000A0 BA01000000          <1>  mov edx, %2
+   172 000000A5 CD80                <1>  int 80h
+   173                              <1> 
+   174 000000A7 61                  <1>  popa
+   175                                  
+   176                                  ;;;;
+   177                                  prtArray nums, numslen          ; prtArray function
+   178                              <1> 
+   179                              <1> 
+   180 000000A8 60                  <1>  pusha
+   181                              <1> 
+   182 000000A9 BF12000000          <1>  mov edi, %2
+   183 000000AE 31F6                <1>  xor esi, esi
+   184 000000B0 66A1[00000000]      <1>  mov ax, [%1]
+   185 000000B6 BB[00000000]        <1>  mov ebx, %1
+   186                              <1> 
+   187 000000BB E862000000          <1>  call prtArrayLoop
+   188                              <1> 
+   189 000000C0 61                  <1>  popa
+   190                                  
+   191 000000C1 68[00000000]            push nums
+   192 000000C6 6A12                    push numslen
+   193 000000C8 E89B000000              call sortArray	
+   194                                  
+   195                                  
+   196                                  prt m3, m3Len     ; print the header "Sorted array"
+   197                              <1> 
+   198                              <1> 
+   199 000000CD 60                  <1>  pusha
+   200                              <1> 
+   201 000000CE B804000000          <1>  mov eax, 4
+   202 000000D3 BB01000000          <1>  mov ebx, 1
+   203 000000D8 B9[4C000000]        <1>  mov ecx, %1
+   204 000000DD BA0C000000          <1>  mov edx, %2
+   205 000000E2 CD80                <1>  int 80h
+   206                              <1> 
+   207 000000E4 61                  <1>  popa
+   208                                  prt nl, nlLen         ; print new line
+   209                              <1> 
+   210                              <1> 
+   211 000000E5 60                  <1>  pusha
+   212                              <1> 
+   213 000000E6 B804000000          <1>  mov eax, 4
+   214 000000EB BB01000000          <1>  mov ebx, 1
+   215 000000F0 B9[1D000000]        <1>  mov ecx, %1
+   216 000000F5 BA01000000          <1>  mov edx, %2
+   217 000000FA CD80                <1>  int 80h
+   218                              <1> 
+   219 000000FC 61                  <1>  popa
+   220                                  
+   221                                  ;;;;
+   222                                  prtArray nums, numslen          ; prtArray function
+   223                              <1> 
+   224                              <1> 
+   225 000000FD 60                  <1>  pusha
+   226                              <1> 
+   227 000000FE BF12000000          <1>  mov edi, %2
+   228 00000103 31F6                <1>  xor esi, esi
+   229 00000105 66A1[00000000]      <1>  mov ax, [%1]
+   230 0000010B BB[00000000]        <1>  mov ebx, %1
+   231                              <1> 
+   232 00000110 E80D000000          <1>  call prtArrayLoop
+   233                              <1> 
+   234 00000115 61                  <1>  popa
+   235                                  ;;;;
+   236                                  
+   237                                  
+   238                                  
+   239                                  ; break
+   240                                  lastBreak:
+   241                                  
+   242                                  ; Normal termination code
+   243 00000116 B801000000              mov eax, 1
+   244 0000011B BB00000000              mov ebx, 0
+   245 00000120 CD80                    int 80h
+   246                                  
+   247                                  ;;;; END MAIN ;;;;
+   248                                  
+   249                                  prtArrayLoop:
+   250 00000122 39FE                        cmp esi, edi            ; check if out of bounds
+   251 00000124 7D2B                        jge exitLoop            ; if not OOB, continue
+   252                                  
+   253 00000126 57                          push edi                ; store counter
+   254 00000127 53                          push ebx
+   255                                  
+   256 00000128 BF[12000000]                mov edi, string         ; set edi to string var in memory
+   257 0000012D E820000000                  call intToStr           ; call to conversion function
+   258                                  	
+   259 00000132 5B                          pop ebx
+   260 00000133 5F                          pop edi                 ; restore counter
+   261                                  
+   262                                      prt string, 7           ; print string
+   263                              <1> 
+   264                              <1> 
+   265 00000134 60                  <1>  pusha
+   266                              <1> 
+   267 00000135 B804000000          <1>  mov eax, 4
+   268 0000013A BB01000000          <1>  mov ebx, 1
+   269 0000013F B9[12000000]        <1>  mov ecx, %1
+   270 00000144 BA07000000          <1>  mov edx, %2
+   271 00000149 CD80                <1>  int 80h
+   272                              <1> 
+   273 0000014B 61                  <1>  popa
+   274                                  
+   275 0000014C 83C602                      add esi, 2              ; increment counter
+   276                                     ; mov ax, WORD[ebx + esi] 
+   277                                  
+   278 0000014F EBD1                        jmp prtArrayLoop
+   279                                  
+   280                                      exitLoop:
+   281 00000151 C3                      ret
+   282                                  
+   283                                  intToStr:
+   284 00000152 B30A                        mov bl, 10      ; set bl to 10 for division
+   285 00000154 83C704                      add edi, 4      ; move edi to the last 0 in string
+   286                                      convert:
+   287                                  	;xor edx,edx
+   288 00000157 F6F3                            div bl          ; divide ax by 10, result in eax, remainder in edx
+   289 00000159 80C430                          add ah, '0'     ; convert remainder to ASCII
+   290 0000015C 8827                            mov [edi], ah   ; move ASCII char into end of edi
+   291 0000015E 4F                      	dec edi         ; move edi back a step in memory
+   292 0000015F 30E4                            xor ah, ah      ; clear ah
+   293 00000161 6683F800                        cmp ax, 0       ; check if quotient is zero
+   294 00000165 75F0                            jnz convert     ; if not, continue
+   295 00000167 C3                      ret
+   296                                  
+   297                                  ; function args (array, length)
+   298                                  sortArray:
+   299                                  ; start reverseArrayMain
+   300                                      ; preserve base pointer/address
+   301 00000168 55                          push ebp
+   302 00000169 89E5                        mov ebp, esp
+   303                                  
+   304                                      ; preserve registers
+   305 0000016B 50                          push eax
+   306 0000016C 53                          push ebx
+   307 0000016D 51                          push ecx
+   308 0000016E 52                          push edx
+   309 0000016F 56                          push esi
+   310                                      ; end pushing/preserving
+   311                                  
+   312                                      ; dx now holds length of array
+   313 00000170 8B5508                      mov edx,[ebp+8]
+   314                                  
+   315                                      ; bx points to end of array
+   316 00000173 668B5D0C                    mov bx,WORD[ebp+12]
+   317 00000177 66035D08                    add bx,WORD[ebp+8]
+   318                                  
+   319                                  
+   320                                  
+   321                                      repeatloop:
+   322                                      ; ax now points to start of the array
+   323 0000017B 8B450C                      mov eax,[ebp+12]
+   324                                  
+   325                                      ; adjust location for last item in unsorted portion
+   326 0000017E 83EB02                      sub ebx, 2
+   327                                  
+   328 00000181 83FB00                      cmp ebx, 0
+   329 00000184 7419                        jz endsort
+   330                                  
+   331                                      compare:
+   332 00000186 668B08                      	mov cx,WORD[eax]
+   333 00000189 663B4802                    	cmp cx, WORD[eax + 2]
+   334 0000018D 7207                        	jb noswap
+   335                                  
+   336                                      	; swap
+   337 0000018F 66874802                    	xchg cx, WORD[eax + 2]
+   338 00000193 668908                      	mov WORD[eax], cx
+   339                                  
+   340                                      	noswap:
+   341 00000196 83C002                      	add eax, 2
+   342 00000199 39D8                        	cmp eax, ebx
+   343 0000019B 72E9                        	jb compare
+   344                                  
+   345 0000019D EBDC                        	jmp repeatloop
+   346                                  
+   347                                      endsort:
+   348                                  
+   349                                      ; pop previously preserved registers and pointers/address
+   350 0000019F 5E                          pop esi
+   351 000001A0 5A                          pop edx
+   352 000001A1 59                          pop ecx
+   353 000001A2 5B                          pop ebx
+   354 000001A3 58                          pop eax
+   355 000001A4 5D                          pop ebp
+   356                                      ; end popping
+   357                                  
+   358 000001A5 C3                          ret
+   359                                  
+   360                                  
